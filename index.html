@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>  body { background-color: #ffffff;  margin: 0px; overflow: hidden; }  </style>
+</head>
+<body>
+
+<script src="three.min.js"></script>
+<script src="trackBall.js"></script>
+
+
+<script>
+    var camera, scene, renderer,controls;
+    var wall, wall2,wallc, wall2c, roof, floor, material;
+    var aspect = window.innerWidth/window.innerHeight;
+    var light;
+    init();
+    animate();
+    function init() {
+        camera = new THREE.PerspectiveCamera( 80, aspect, 1, 2000);
+        camera.position.z = 20;
+
+        scene = new THREE.Scene();
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+         material =new THREE.MeshNormalMaterial( {color: 0x00ff00} );
+        var planeMaterial = new THREE.MeshPhongMaterial( { color: 0x00dddd, specular: 0x009900, shininess: 10, shading: THREE.FlatShading } );
+        wall = new THREE.Mesh( new THREE.BoxGeometry( 1,6, 1), material );
+        wall2 = new THREE.Mesh( new THREE.BoxGeometry( 1,6, 1), material );
+        wallc = new THREE.Mesh( new THREE.BoxGeometry( 1,6, 9), material );
+        roof = new THREE.Mesh( new THREE.BoxGeometry( 12,1, 9), material );
+        // roof.castShadow = true;
+        floor = new THREE.Mesh( new THREE.BoxGeometry( 40,0.1, 20), planeMaterial );
+        floor.receiveShadow = true;
+
+        scene.add( roof );
+        scene.add( wall );
+        scene.add( wall2 );
+        scene.add( wallc);
+        scene.add( floor );
+
+        wall.position.set( 3, 0, -4 );
+        wall2.position.set( 3, 0, 4 );
+        wallc.position.set( 14, 0, 0 );
+        roof.position.set( 8.5, 2.5, 0 );
+        floor.position.set(0,-3,0);
+
+        light = new THREE.PointLight( 0xffffff, 1, 100 );
+        light.position.set( 5, 8, -10 );
+        light.castShadow = true;
+        light.shadow.mapSize.width = 32;
+        light.shadow.mapSize.height = 32;
+
+        light.shadow.camera.rotateX(45);
+        scene.add( light );
+
+        // var helper = new THREE.CameraHelper( light.shadow.camera );
+        // scene.add( helper );
+
+
+
+        controls = new THREE.TrackballControls( camera );
+        document.body.appendChild( renderer.domElement );
+
+
+
+    }
+    function animate() {
+        requestAnimationFrame( animate );
+        renderer.render( scene, camera );
+        controls.update();
+
+    }
+
+</script>
+
+</body>
+</html>
